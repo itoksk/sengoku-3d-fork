@@ -3,110 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>諏訪原城の戦い 3D俯瞰デモ</title>
+<!-- このファイルはすべての合戦で共通です。編集せずにコピーして使ってください（題名などは scene.js に書きます） -->
+<title>戦国合戦 3D俯瞰デモ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --panel: rgba(238,240,235,0.9);
-  --ink:#1c2026; --sub:#4d5560; --rule:rgba(28,32,38,.16);
-  --kin:#9a7a2c; --shu:#b8231b; --ai:#2848a0;
-  --btn:rgba(28,32,38,.07); --btnh:rgba(28,32,38,.14);
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --panel: rgba(20,23,28,0.86);
-    --ink:#eef0ea; --sub:#a9b0b8; --rule:rgba(238,240,234,.14);
-    --kin:#d4b25e; --shu:#e25a4c; --ai:#7f9cf0;
-    --btn:rgba(255,255,255,.08); --btnh:rgba(255,255,255,.16);
-  }
-}
-:root[data-theme="dark"]{
-  --panel: rgba(20,23,28,0.86);
-  --ink:#eef0ea; --sub:#a9b0b8; --rule:rgba(238,240,234,.14);
-  --kin:#d4b25e; --shu:#e25a4c; --ai:#7f9cf0;
-  --btn:rgba(255,255,255,.08); --btnh:rgba(255,255,255,.16);
-}
-*,*::before,*::after{box-sizing:border-box}
-html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
-body{height:100%;margin:0;overflow:hidden;background:#cdd5d6;color:var(--ink);
-  font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-#c{position:fixed;top:0;left:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
-#c:active{cursor:grabbing}
-.ui{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
-  padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 14px);
-  display:flex;flex-direction:column;justify-content:space-between}
-.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.panel{background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border-radius:6px;pointer-events:auto;box-shadow:0 6px 24px rgba(0,0,0,.18)}
-.title{padding:12px 16px 12px 14px;border-left:4px solid var(--kin);max-width:min(420px,60vw)}
-.title h1{font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:800;
-  font-size:clamp(20px,3.2vw,30px);letter-spacing:.08em;margin:0;line-height:1.2}
-.title p{margin:4px 0 0;font-size:12px;color:var(--sub);line-height:1.5}
-.title a{color:var(--sub)}
-.legend{padding:10px 14px;font-size:12px;line-height:1.9;min-width:150px}
-.legend .row{display:flex;align-items:center;gap:8px}
-.sw{width:14px;height:14px;border-radius:2px;flex:none}
-.sw.ai{background:#2c4fb0}.sw.shu{background:#c0281f}
-.sw.arr{width:18px;height:8px;background:linear-gradient(90deg,#2c4fb0 0 45%,transparent 45% 55%,#2c4fb0 55%);clip-path:polygon(0 0,80% 0,100% 50%,80% 100%,0 100%)}
-.legend .hint{margin-top:6px;padding-top:6px;border-top:1px solid var(--rule);color:var(--sub);font-size:11px;line-height:1.6}
-.card{align-self:center;width:min(760px,100%);padding:14px 18px 12px}
-.meta{display:flex;align-items:baseline;gap:12px;color:var(--sub);font-size:12px}
-.meta .act{font-family:"Shippori Mincho",serif;font-weight:800;font-size:15px;color:var(--kin)}
-.card h2{font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:700;
-  font-size:clamp(19px,2.6vw,25px);margin:4px 0 6px;letter-spacing:.05em}
-.card p{margin:0;font-size:14px;line-height:1.8;min-height:3.6em;max-width:68ch}
-.bar{height:3px;background:var(--rule);margin:12px 0 10px;border-radius:2px;overflow:hidden}
-#prog{height:100%;width:0;background:var(--kin)}
-.ctrl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-button{font:inherit;color:var(--ink);background:var(--btn);border:0;border-radius:4px;height:32px;min-width:36px;padding:0 10px;cursor:pointer}
-button:hover{background:var(--btnh)}
-button:focus-visible{outline:2px solid var(--kin);outline-offset:2px}
-#dots{display:flex;gap:4px;flex:1;min-width:0}
-#dots button{flex:1;min-width:0;height:32px;padding:0 4px;font-family:"Shippori Mincho",serif;font-weight:700;font-size:13px;color:var(--sub)}
-#dots button.on{background:var(--kin);color:#fff}
-#dots button.done{color:var(--ink)}
-.note{font-size:11px;color:var(--sub);margin-top:8px}
-.attr{font-size:10px;color:var(--sub);margin-top:6px;opacity:.85}
-.fold{display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s cubic-bezier(.2,.7,.2,1)}
-.fold>div{overflow:hidden;min-height:0}
-.card.min .fold{grid-template-rows:0fr}
-.card.min h2{margin-bottom:0}
-#fold{margin-left:auto;align-self:center;white-space:nowrap;height:28px;font-size:12px;color:var(--sub)}
-@media (prefers-reduced-motion: reduce){.fold{transition:none}}
-#loading{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;
-  background:#cdd5d6;font-family:"Shippori Mincho",serif;font-size:18px;color:#1c2026;letter-spacing:.2em;transition:opacity .8s}
-@media (max-width:640px){
-  .legend{display:none}
-  .title{max-width:100%}
-  .card{padding:12px 14px 10px}
-  .card p{font-size:13px;line-height:1.7;min-height:0}
-  #dots button{font-size:12px}
-}
-@media (prefers-reduced-motion: reduce){ #loading{transition:none} }
-</style>
+<link rel="stylesheet" href="../lib/sengoku.css">
 </head>
 <body>
 <canvas id="c"></canvas>
 <div class="ui">
   <div class="top">
     <div class="panel title">
-      <h1>諏訪原城の戦い</h1>
-      <p>天正3年（1575）　徳川家康による武田方・諏訪原城の攻略　<a href="../">一覧へ</a></p>
+      <h1 id="btitle"></h1>
+      <p><span id="bsub"></span>　<a href="../">一覧へ</a></p>
     </div>
     <div class="panel legend">
-      <div class="row"><span class="sw ai"></span>徳川軍</div>
-      <div class="row"><span class="sw shu"></span>武田軍</div>
-      <div class="row"><span class="sw arr"></span>進軍・攻撃の方向</div>
-      <div class="hint">ドラッグで視点を回転<br>ホイール・ピンチで拡大縮小<br>ダブルクリックで視点を戻す<br>Space で再生／停止<br>H で説明の表示／非表示</div>
+      <div id="blegend"></div>
+      <div class="hint">ドラッグで視点を回転<br>ホイール・ピンチで拡大縮小<br>ダブルクリックで視点を戻す<br>Space で再生／停止<br>H で説明の表示／非表示<br>S で諸説ノート</div>
     </div>
   </div>
   <div class="panel card">
-    <div class="meta"><span class="act" id="pact"></span><span id="pdate"></span><button id="fold" aria-expanded="true" aria-controls="pbody">説明を隠す</button></div>
+    <div class="meta"><span class="act" id="pact"></span><span id="pdate"></span>
+      <span class="tools"><button id="setsuBtn" aria-haspopup="dialog" aria-controls="setsu">諸説<span class="n zero">0</span></button><button id="fold" aria-expanded="true" aria-controls="pbody">説明を隠す</button></span></div>
     <h2 id="ptitle"></h2>
     <div class="fold" id="pbody"><div><p id="ptext"></p></div></div>
     <div class="bar"><div id="prog"></div></div>
@@ -117,10 +36,18 @@ button:focus-visible{outline:2px solid var(--kin);outline-offset:2px}
       <div id="dots"></div>
       <button id="speed" aria-label="再生速度">1×</button>
     </div>
-    <div class="fold"><div><div class="note">地形は国土地理院の標高データ（5mメッシュ）を高さ1.8倍に強調して表示。地表の色分けは当時を想定したもので、軍勢の数と配置は流れを理解するための概念的な再現です。城・人・旗の大きさは見やすさのため誇張しています。</div></div></div>
-    <div class="attr">出典：国土地理院 標高タイル／水系 © OpenStreetMap contributors</div>
+    <div class="fold"><div><div class="note" id="bnote"></div></div></div>
+    <div class="attr" id="battr">地形：国土地理院 標高タイルを加工して作成／水系：© OpenStreetMap contributors</div>
   </div>
 </div>
+<aside class="panel setsu" id="setsu" role="dialog" aria-labelledby="setsuTitle" aria-hidden="true">
+  <header><div><h3 id="setsuTitle">諸説ノート</h3><p id="setsuSub"></p></div><button id="setsuClose" aria-label="諸説ノートを閉じる">×</button></header>
+  <div class="body" id="setsuBody"></div>
+  <footer>
+    <a class="cta" id="setsuEdit" target="_blank" rel="noopener">諸説を追記する</a><a class="cta sub" id="setsuHow" target="_blank" rel="noopener">追記のしかた</a>
+    <div>ここは誰でも追記できるノートです。出典を添えて、別の見方を足してください。</div>
+  </footer>
+</aside>
 <div id="loading">地形を生成しています</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

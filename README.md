@@ -1,41 +1,94 @@
 # 戦国合戦 3D俯瞰デモ
 
-three.js（r128, CDN）で作った、戦国時代の合戦を3Dで俯瞰する授業用デモです。地形は国土地理院の標高データから作った実際の地形で、ビルド不要の静的HTMLなので GitHub Pages でそのまま公開できます。
+**https://k-ito-schoolagent.github.io/sengoku-3d/**
 
-- `suwahara/` 諏訪原城の戦い（1575）
-- `sekigahara/` 関ヶ原の戦い（1600）
+国土地理院の標高データから作った**実際の地形**の上で、戦国時代の合戦を場面ごとに3Dで俯瞰する教材です。陣の位置は陣跡・城跡の緯度経度に合わせてあり、「なぜここに陣を置いたのか」「どの谷を通って攻めたのか」を地形と一緒に見られます。説が分かれるところは、各ページの **「諸説」ボタン** から、みんなで書き足した別の説を読めます。
 
-## 操作
-- ドラッグ：視点の回転／ホイール・ピンチ：拡大縮小／ダブルクリック：視点リセット
-- Space：再生・停止／← →：場面移動／H：説明の表示・非表示
+**だれでも合戦や諸説を追加できる、オープンなプロジェクトです。** 地元の城、好きな合戦、「通説とはちがう説がある」という話を、ぜひ足してください。GitHub がはじめての方の、issue やプルリクエストの練習にも使ってください。→ [参加のしかた](CONTRIBUTING.md)
 
-## ローカルで確認
+## 収録している合戦
+
+| 合戦 | 年 | 場所 | 見どころ |
+|---|---|---|---|
+| [諏訪原城の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/suwahara/) | 天正3年（1575） | 静岡県島田市 | 牧之原台地の北端の城、丸馬出と三日月堀、大井川と東海道 |
+| [関ヶ原の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/sekigahara/) | 慶長5年（1600） | 岐阜県関ケ原町 | 陣跡の実座標にもとづく布陣、霧の開戦、小早川の寝返り、島津の退き口 |
+
+「この合戦も入れてほしい」は [issue](https://github.com/k-ito-schoolagent/sengoku-3d/issues/new/choose) でリクエストしてください。
+
+## 遊び方
+
+- 場面ボタン（序・一・二…・結）で行き来する。▶ で自動再生
+- ドラッグで視点を回す、ホイール・ピンチで拡大縮小、ダブルクリックで視点を戻す
+- キー操作：Space 再生／停止、← → 場面移動、H 説明の表示・非表示、S 諸説ノート
+
+授業ではプロジェクターに映して、場面ごとに止めながら「なぜこの位置なのか」を地形から考えるのがおすすめです。
+
+## 参加のしかた（くわしくは [CONTRIBUTING.md](CONTRIBUTING.md)）
+
+| やること | 方法 |
+|---|---|
+| 話してみる | [issue](https://github.com/k-ito-schoolagent/sengoku-3d/issues/new/choose) に「この合戦を入れてほしい」「ここは別の説がある」「表示がおかしい」を書く |
+| 諸説を足す | 合戦ページの「諸説」→「諸説を追記する」から、ブラウザだけでプルリクエストを送れる |
+| 合戦をつくる | `_template/` をコピーして、場所の緯度経度と場面の文章を書く |
+| GitHub の練習 | 「練習：はじめての issue」を書く、[CONTRIBUTORS.md](CONTRIBUTORS.md) に名前を足すプルリクエストを送る |
+
+## しくみ
+
 ```
+lib/sengoku.js      共通エンジン（実地形・樹木・足軽と騎馬武者・矢印・場面送り・カメラ・諸説ノート）
+lib/sengoku.css     合戦ページの共通スタイル
+<合戦>/index.html   すべての合戦で共通のページ（コピーして使う）
+<合戦>/scene.js     場面の文章・カメラ・陣営・軍勢の位置と道順・城など
+<合戦>/setsu.md     諸説ノート（みんなで追記する Markdown）
+<合戦>/battle.json  一覧に出る紹介文と、地形データを作る設定
+<合戦>/geo/         地形データ（_geo/build.py が作る）
+_geo/build.py       地形データを作るスクリプト
+_template/          新しい合戦の雛形
+battles.json        一覧ページに出す合戦のリスト
+```
+
+### 使っている技術
+
+- [three.js](https://threejs.org/) r128（CDN から読み込み。ビルド不要の静的サイト）
+- Python 3 + numpy + Pillow + requests（地形データの作成）
+- GitHub Pages（公開）
+
+### 使っているデータ
+
+| データ | 何に使うか |
+|---|---|
+| [国土地理院 標高タイル](https://maps.gsi.go.jp/development/demtile.html)（`dem5a_png` 5m メッシュ、欠けは `dem_png` 10m メッシュで補う） | 地形の起伏、陰影、林・田畑・原野の塗り分け |
+| [OpenStreetMap](https://www.openstreetmap.org/)（[Overpass API](https://overpass-api.de/)） | 川・水面の位置 |
+| 地理院地図・OpenStreetMap | 陣跡・城跡・宿場・一里塚などの緯度経度 |
+
+縮尺は 1単位 = 30m で、高さは見やすさのため 1.8〜2 倍に強調しています。地表の色は標高と傾斜から当時のようすを想定して作ったもので、現代の土地利用ではありません（新幹線や高速道路が写り込む航空写真は使っていません）。旧街道は、史跡の位置をつないだ概略の線です。
+
+### ローカルで動かす
+
+```bash
+git clone https://github.com/k-ito-schoolagent/sengoku-3d.git
+cd sengoku-3d
 python3 -m http.server 8000
+# → http://localhost:8000
 ```
-で http://localhost:8000 を開きます（地形データを `fetch` で読むため、ファイルを直接開くと表示されません）。
 
-## 構成
-- `lib/sengoku.js` … 共通エンジン（実地形の読み込み、地表・樹木、足軽・騎馬武者・幟、矢印、操作UI、カメラ）
-- `<合戦>/scene.js` … 場面の文章・カメラ・布陣と進路・城などの固有物。布陣は陣跡などの緯度経度で指定（`LL(lat, lon)`）
-- `<合戦>/geo/` … 焼き込み済みの地形データ（`terrain.bin` 標高、`relief.jpg` 地表、`cover.png` 林・水面、`meta.json`）
-- `_geo/build.py` … 地形データの生成スクリプト
+地形データを作り直すとき：
 
-## 地形データの作り直し
+```bash
+pip install numpy pillow requests
+python3 _geo/build.py            # すべての合戦
+python3 _geo/build.py sekigahara # 1つだけ
 ```
-python3 _geo/build.py            # 両方
-python3 _geo/build.py sekigahara # 片方だけ
-```
-国土地理院の標高タイル（dem5a、欠けは dem10b で補完）と OpenStreetMap（Overpass API）の水系を取得し、`<合戦>/geo/` に書き出します。取得したタイルは `_geo/cache/`（git 管理外）に保存されます。範囲・旧街道の概略線・季節は `build.py` の `BATTLES` で設定します。
-
-## 縮尺と表現
-- 1単位 = 30m。高さは関ヶ原2倍・諏訪原1.8倍に強調しています
-- 地表の色分け（林・田畑・原野・河原）は標高と傾斜から当時を想定して作ったもので、現代の土地利用ではありません。旧街道は史跡位置をつないだ概略線です
-- 人・旗・城の大きさは見やすさのため誇張しています
-
-## 出典
-- 地形：国土地理院 標高タイル（基盤地図情報 数値標高モデル）
-- 水系：© OpenStreetMap contributors（ODbL）
 
 ## 注意
-通説にもとづく概念的な再現です。軍勢の数・配置・進路には演出が含まれます。
+
+軍勢の数・配置・進路は、通説にもとづいて流れを理解するための**概念的な再現**です。人・旗・城は実際よりずっと大きく描いています。細部に諸説があるところは「諸説」ボタンから読めます。
+
+## ライセンスと出典
+
+- プログラム：[MIT License](LICENSE)
+- 文章（場面の解説・諸説ノート・紹介文）：[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.ja)
+- 地形：国土地理院 標高タイルを加工して作成
+- 水系：© OpenStreetMap contributors（ODbL）
+
+くわしくは [LICENSE-CONTENT.md](LICENSE-CONTENT.md) を読んでください。参加する人は [行動規範](CODE_OF_CONDUCT.md) を守ってください。

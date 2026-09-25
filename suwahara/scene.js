@@ -34,6 +34,11 @@ const CAM=[
 const ENV={bg:0xc5d3da,fn:230,ff:640,sun:0.95,sunC:0xfff0d8,hemi:0.62};
 
 Sengoku.start({
+  id:'suwahara',
+  title:'諏訪原城の戦い',
+  subtitle:'天正3年（1575）　徳川家康による武田方・諏訪原城の攻略',
+  legend:[{color:'#2c4fb0',label:'徳川軍'},{color:'#c0281f',label:'武田軍'},{arrow:'#2c4fb0',label:'進軍・攻撃の方向'}],
+  note:'地形は国土地理院の標高データ（5mメッシュ）を高さ1.8倍に強調して表示。地表の色分けは当時を想定したもので、軍勢の数と配置は流れを理解するための概念的な再現です（諸説は「諸説」ボタンから）。城・人・旗の大きさは見やすさのため誇張しています。',
   geo:'geo/',exaggeration:1.8,SIDES,PH,CAM,env:ENV,DUR:13,trees:15000,conifer:.45,seed:7,
   treeColors:{c1:'#2c4a2a',c2:'#436238',b1:'#4f6f33',b2:'#6e8a3e'},
   build(ctx){

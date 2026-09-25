@@ -43,6 +43,11 @@ const ENV=[
 ];
 
 Sengoku.start({
+  id:'sekigahara',
+  title:'関ヶ原の戦い',
+  subtitle:'慶長5年9月15日（1600年10月21日）　徳川家康の東軍と石田三成らの西軍による決戦',
+  legend:[{color:'#2c4fb0',label:'東軍'},{color:'#c0281f',label:'西軍'},{color:'#8b3fc4',label:'寝返り'}],
+  note:'地形は国土地理院の標高データ（5mメッシュ）を高さ2倍に強調して表示。地表の色分けは当時を想定したもので、布陣は陣跡の位置をもとにした概念的な再現です（細部には諸説あり。「諸説」ボタンから読めます）。人や旗の大きさは見やすさのため誇張しています。',
   geo:'geo/',exaggeration:2,SIDES,PH,CAM,ENV,DUR:14,trees:16000,conifer:.5,seed:11,
   treeColors:{c1:'#2d4629',c2:'#44603a',b1:'#566b34',b2:'#7b7a3a'},
   build(ctx){

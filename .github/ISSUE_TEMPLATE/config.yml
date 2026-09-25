@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 参加のしかた（CONTRIBUTING.md）
+    url: https://github.com/k-ito-schoolagent/sengoku-3d/blob/main/CONTRIBUTING.md
+    about: issue やプルリクエストの書き方、合戦のつくり方はこちら

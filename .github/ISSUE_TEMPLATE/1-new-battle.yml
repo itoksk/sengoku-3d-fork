@@ -1,0 +1,45 @@
+name: 新しい合戦のリクエスト・つくります宣言
+description: 入れてほしい合戦や、自分でつくりたい合戦を知らせる
+title: "[合戦] "
+labels: ["新しい合戦"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        入れてほしい合戦のリクエストも、「自分でつくります」の宣言も、どちらも歓迎です。分かる所だけ書いてください。
+  - type: input
+    id: name
+    attributes:
+      label: 合戦の名前
+      placeholder: 例）桶狭間の戦い
+    validations:
+      required: true
+  - type: input
+    id: when
+    attributes:
+      label: いつ
+      placeholder: 例）永禄3年（1560）5月
+  - type: input
+    id: where
+    attributes:
+      label: どこで（今の地名、分かれば緯度経度）
+      placeholder: 例）愛知県名古屋市緑区・豊明市あたり
+  - type: textarea
+    id: scenes
+    attributes:
+      label: 見せたい場面・おもしろいポイント
+      placeholder: 例）今川軍の進路と、信長の迂回説・正面攻撃説のちがいを地形で比べたい
+  - type: textarea
+    id: sources
+    attributes:
+      label: 参考にする本・史料・サイト
+  - type: dropdown
+    id: who
+    attributes:
+      label: だれがつくりますか
+      options:
+        - 自分でつくってみます
+        - だれかにつくってほしい（リクエスト）
+        - 手伝ってくれる人と一緒につくりたい
+    validations:
+      required: true

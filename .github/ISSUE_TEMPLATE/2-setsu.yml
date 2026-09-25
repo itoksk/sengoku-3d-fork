@@ -1,0 +1,36 @@
+name: 諸説の提案
+description: 場面の描き方とちがう説や、通説の根拠になった史料を知らせる
+title: "[諸説] "
+labels: ["諸説"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        自分で setsu.md に書き足してプルリクエストを送ることもできます（合戦ページの「諸説」→「諸説を追記する」）。まずは話してみたい、という場合はこの issue で。
+  - type: dropdown
+    id: battle
+    attributes:
+      label: 合戦
+      options:
+        - 関ヶ原の戦い
+        - 諏訪原城の戦い
+        - その他（下に書く）
+    validations:
+      required: true
+  - type: input
+    id: scene
+    attributes:
+      label: 場面
+      placeholder: 例）第四幕 小早川秀秋の寝返り／全体
+  - type: textarea
+    id: body
+    attributes:
+      label: どんな説か
+      description: 通説とどこがちがうのかを、自分の言葉で書いてください
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: 出典
+      description: 書名・著者・出版社・年、論文、自治体や博物館の資料、URL など。分からなければ「探し中」でも大丈夫です

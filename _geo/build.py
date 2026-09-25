@@ -7,7 +7,8 @@
   relief.jpg    TEX×TEX 地表テクスチャ（標高から作った陰影＋当時を想定した色分け）
   meta.json     縮尺・原点・出典など
 
-使い方: python3 _geo/build.py [sekigahara|suwahara ...]
+使い方: python3 _geo/build.py [合戦のフォルダ名 ...]（省略すると battle.json のある全フォルダ）
+設定: <合戦>/battle.json の "build" 欄（原点の緯度経度・範囲・旧街道の概略線・季節など）
 """
 import io, json, math, os, sys, time
 import numpy as np
@@ -18,38 +19,27 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(ROOT, '_geo', 'cache')
 UA = {'User-Agent': 'sengoku-3d-edu/1.0 (github.com/itoksk/sengoku-3d)'}
 
-M_PER_UNIT = 30.0
-BATTLES = {
-    'sekigahara': dict(
-        origin=(35.3640, 136.4800),    # 関ヶ原盆地〜南宮山の中間
-        size_m=10500, N=351, TEX=2048, season='autumn',
-        # 旧街道（OSM の「中山道」区間と史跡位置をつないだ概略線）
-        roads={
-            '中山道': [(35.3708, 136.5117), (35.3690, 136.5000), (35.3676, 136.4930), (35.3662, 136.4898),
-                     (35.3655, 136.4863), (35.3646, 136.4780), (35.3634, 136.4690), (35.3604, 136.4626),
-                     (35.3596, 136.4604), (35.3591, 136.4583), (35.3585, 136.4554), (35.3583, 136.4524),
-                     (35.3586, 136.4494), (35.3583, 136.4470), (35.3568, 136.4459), (35.3520, 136.4434),
-                     (35.3496, 136.4397), (35.3486, 136.4353), (35.3478, 136.4292), (35.3475, 136.4260),
-                     (35.3489, 136.4242), (35.3497, 136.4216), (35.3465, 136.4113)],
-            '北国脇往還': [(35.3638, 136.4672), (35.3665, 136.4640), (35.3708, 136.4565), (35.3740, 136.4480),
-                      (35.3775, 136.4380), (35.3801, 136.4300), (35.3845, 136.4180)],
-            '伊勢街道': [(35.3636, 136.4674), (35.3570, 136.4710), (35.3500, 136.4760), (35.3430, 136.4810),
-                     (35.3405, 136.4843), (35.3350, 136.4920), (35.3280, 136.5000)],
-        },
-    ),
-    'suwahara': dict(
-        origin=(34.8155, 138.1230),    # 諏訪原城と大井川の間
-        size_m=9000, N=301, TEX=2048, season='summer', riverbed_m=700,
-        # 旧東海道（日坂宿 → 小夜の中山 → 菊川坂 → 諏訪原城 → 金谷坂 → 金谷宿 → 大井川）の概略線
-        roads={
-            '東海道': [(34.8038, 138.0752), (34.8059, 138.0852), (34.8071, 138.0880), (34.8125, 138.0919),
-                     (34.8144, 138.0945), (34.8163, 138.0971), (34.8186, 138.1002), (34.8193, 138.1076),
-                     (34.8182, 138.1110), (34.8172, 138.1147), (34.8160, 138.1186), (34.8150, 138.1216),
-                     (34.8157, 138.1235), (34.8168, 138.1246), (34.8200, 138.1275), (34.8235, 138.1320),
-                     (34.8272, 138.1411), (34.8300, 138.1480), (34.8316, 138.1556), (34.8330, 138.1650)],
-        },
-    ),
-}
+M_PER_UNIT = 30.0   # 1単位 = 30m（全合戦共通。変えるとカメラや人形の大きさの前提が崩れます）
+
+
+def load_battle(name):
+    """<合戦>/battle.json を読む。build 欄が地形生成の設定。"""
+    path = os.path.join(ROOT, name, 'battle.json')
+    with open(path, encoding='utf-8') as f:
+        d = json.load(f)
+    cfg = d['build']
+    cfg.setdefault('N', 301)
+    cfg.setdefault('TEX', 2048)
+    cfg.setdefault('season', 'summer')
+    cfg.setdefault('roads', {})
+    cfg.setdefault('checks', [])
+    return cfg
+
+
+def all_battles():
+    return sorted(n for n in os.listdir(ROOT)
+                  if not n.startswith(('_', '.')) and os.path.exists(os.path.join(ROOT, n, 'battle.json')))
+
 
 # ---------------- 座標 ----------------
 R_EARTH = 6378137.0
@@ -253,7 +243,7 @@ def blur(a, sigma):
 
 # ---------------- 本体 ----------------
 def build(name):
-    cfg = BATTLES[name]
+    cfg = load_battle(name)
     lat0, lon0 = cfg['origin']
     S, N, TEX = cfg['size_m'], cfg['N'], cfg['TEX']
     out = os.path.join(ROOT, name, 'geo')
@@ -453,13 +443,8 @@ def sample_H(meta, H, lat, lon):
     return (H[y0, x0] * (1 - tx) * (1 - ty) + H[y0, x0 + 1] * tx * (1 - ty)
             + H[y0 + 1, x0] * (1 - tx) * ty + H[y0 + 1, x0 + 1] * tx * ty)
 
-CHECKS = {
-    'sekigahara': [('松尾山', 35.34716, 136.45431, 394), ('南宮山', 35.34683, 136.50978, 419), ('決戦地', 35.37054, 136.46156, 130)],
-    'suwahara': [('諏訪原城跡', 34.81786, 138.1206, 210), ('大井川 川越遺跡', 34.8316, 138.1556, 30), ('小夜の中山', 34.8163, 138.0971, 250)],
-}
-
 if __name__ == '__main__':
-    for nm in (sys.argv[1:] or list(BATTLES)):
+    for nm in (sys.argv[1:] or all_battles()):
         meta, H = build(nm)
-        for label, la, lo, exp in CHECKS.get(nm, []):
-            print(f'  check {label}: {sample_H(meta, H, la, lo):.1f} m (目安 {exp} m)')
+        for c in load_battle(nm)['checks']:
+            print(f"  check {c['name']}: {sample_H(meta, H, c['lat'], c['lon']):.1f} m (目安 {c['expect_m']} m)")
