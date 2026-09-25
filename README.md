@@ -44,7 +44,8 @@ lib/sengoku.css     合戦ページの共通スタイル
 <合戦>/geo/         地形データ（_geo/build.py が作る）
 _geo/build.py       地形データを作るスクリプト
 _template/          新しい合戦の雛形
-battles.json        一覧ページに出す合戦のリスト
+battles.json        一覧ページに出す合戦のリスト（トップの日本地図の印も battle.json の緯度経度から自動で置かれる）
+lib/japan-map.json  トップの日本地図の輪郭（_geo/japan_map.py が作る）
 ```
 
 ### 使っている技術
@@ -90,5 +91,6 @@ python3 _geo/build.py sekigahara # 1つだけ
 - 文章（場面の解説・諸説ノート・紹介文）：[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.ja)
 - 地形：国土地理院 標高タイルを加工して作成
 - 水系：© OpenStreetMap contributors（ODbL）
+- トップの日本地図：Natural Earth（パブリックドメイン。world-atlas 経由）
 
 くわしくは [LICENSE-CONTENT.md](LICENSE-CONTENT.md) を読んでください。参加する人は [行動規範](CODE_OF_CONDUCT.md) を守ってください。

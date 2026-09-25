@@ -7,6 +7,7 @@
 | プログラム | `lib/`、各合戦の `scene.js`・`index.html`、`_geo/build.py`、トップの `index.html` | [MIT License](LICENSE) |
 | 文章（場面の解説・諸説ノート・合戦の紹介文・ドキュメント） | `scene.js` の `PH` の文章、`setsu.md`、`battle.json` の紹介文、`*.md` | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.ja)（表示・継承） |
 | 地形データ | 各合戦の `geo/terrain.bin`・`geo/relief.jpg`・`geo/cover.png` | 国土地理院 標高タイルを加工して作成（[国土地理院コンテンツ利用規約](https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html)）。水系・水面の描画に © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors（ODbL）のデータを使用 |
+| 日本地図の輪郭 | `lib/japan-map.json` | Natural Earth（パブリックドメイン）。world-atlas（ISC）の TopoJSON から作成 |
 | 外部ライブラリ | three.js（CDN から読み込み） | MIT License |
 | フォント | Shippori Mincho、Noto Sans JP（Google Fonts から読み込み） | SIL Open Font License |
 
