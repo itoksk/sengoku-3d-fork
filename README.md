@@ -10,6 +10,7 @@
 
 | 合戦 | 年 | 場所 | 見どころ |
 |---|---|---|---|
+| [厳島の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/itsukushima/) | 天文24年（1555） | 広島県廿日市市宮島町 | 海と島の地形、嵐の夜の渡海、博奕尾の尾根越えの奇襲、村上水軍の働き |
 | [諏訪原城の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/suwahara/) | 天正3年（1575） | 静岡県島田市 | 牧之原台地の北端の城、丸馬出と三日月堀、大井川と東海道 |
 | [関ヶ原の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/sekigahara/) | 慶長5年（1600） | 岐阜県関ケ原町 | 陣跡の実座標にもとづく布陣、霧の開戦、小早川の寝返り、島津の退き口 |
 
@@ -60,6 +61,7 @@ lib/japan-map.json  トップの日本地図の輪郭（_geo/japan_map.py が作
 |---|---|
 | [国土地理院 標高タイル](https://maps.gsi.go.jp/development/demtile.html)（`dem5a_png` 5m メッシュ、欠けは `dem_png` 10m メッシュで補う） | 地形の起伏、陰影、林・田畑・原野の塗り分け |
 | [OpenStreetMap](https://www.openstreetmap.org/)（[Overpass API](https://overpass-api.de/)） | 川・水面の位置 |
+| 標高タイルにデータがない範囲 | 海に面した合戦（厳島など）では、これを海面として描く。近代の埋立地は `battle.json` で多角形を指定して当時の海に戻す |
 | 地理院地図・OpenStreetMap | 陣跡・城跡・宿場・一里塚などの緯度経度 |
 
 縮尺は 1単位 = 30m で、高さは見やすさのため 1.8〜2 倍に強調しています。地表の色は標高と傾斜から当時のようすを想定して作ったもので、現代の土地利用ではありません（新幹線や高速道路が写り込む航空写真は使っていません）。旧街道は、史跡の位置をつないだ概略の線です。

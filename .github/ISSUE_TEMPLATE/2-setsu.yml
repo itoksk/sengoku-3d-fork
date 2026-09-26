@@ -14,6 +14,7 @@ body:
       options:
         - 関ヶ原の戦い
         - 諏訪原城の戦い
+        - 厳島の戦い
         - その他（下に書く）
     validations:
       required: true

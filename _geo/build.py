@@ -9,6 +9,8 @@
 
 使い方: python3 _geo/build.py [合戦のフォルダ名 ...]（省略すると battle.json のある全フォルダ）
 設定: <合戦>/battle.json の "build" 欄（原点の緯度経度・範囲・旧街道の概略線・季節など）
+      海に面した戦場は "sea": 0 を入れる（標高タイルにデータがない海域を海面 0m として平らに描く）
+      近代の埋立地は "reclaimed": [[[緯度, 経度], …], …] の多角形で囲むと、当時の海として描く
 """
 import io, json, math, os, sys, time
 import numpy as np
@@ -124,13 +126,19 @@ class Dem:
             out += v * w
         return out.reshape(lats.shape)
 
-    def grid(self, lats, lons):
+    def grid(self, lats, lons, sea=None):
         h = self.sample_grid(lats, lons, 'dem5a_png', 15)
         miss = np.isnan(h)
         if miss.any():
             h2 = self.sample_grid(lats, lons, 'dem_png', 14)
             h[miss] = h2[miss]
-        if np.isnan(h).any():
+        # どちらのタイルにもデータがない所（海など）。build() が海の塗り分けに使う
+        self.missing = np.isnan(h)
+        if sea is not None:
+            # 海に面した戦場: 欠損は海面の標高で埋め、干潟など海面下の値も海面に揃える
+            h[self.missing] = sea
+            h = np.maximum(h, sea)
+        elif self.missing.any():
             # 水面などの欠損は近傍の最小値で埋める
             h = fill_nan(h)
         return h
@@ -246,6 +254,7 @@ def build(name):
     cfg = load_battle(name)
     lat0, lon0 = cfg['origin']
     S, N, TEX = cfg['size_m'], cfg['N'], cfg['TEX']
+    sea_m = cfg.get('sea')   # 海面の標高[m]。海に面した戦場では 0 を指定する（標高データのない海域を海面として描く）
     out = os.path.join(ROOT, name, 'geo')
     os.makedirs(out, exist_ok=True)
     dem = Dem()
@@ -262,15 +271,40 @@ def build(name):
     # 1) メッシュ用の標高グリッド（頂点位置 = 端から端まで N 点）
     TEX_DEM = -1
     la, lo = ll_grid(N)
-    H = dem.grid(la, lo)
-    print(name, 'height', round(float(H.min()), 1), '..', round(float(H.max()), 1))
+    H = dem.grid(la, lo, sea=sea_m)
+    sea_v = dem.missing if sea_m is not None else None
+
+    def to_tex(lat, lon, n):
+        e, no = ll_to_enu(lat0, lon0, lat, lon)
+        return ((e / S) + 0.5) * n, (0.5 - no / S) * n
+
+    def poly_mask(n, polys):
+        img = Image.new('L', (n, n), 0)
+        d = ImageDraw.Draw(img)
+        for pts in polys:
+            d.polygon([to_tex(la_, lo_, n) for la_, lo_ in pts], fill=255)
+        return np.asarray(img) > 0
+
+    # 近代の埋立地（battle.json の build.reclaimed に緯度経度の多角形で指定）は当時の海として平らにする
+    reclaimed = cfg.get('reclaimed', []) if sea_m is not None else []
+    if reclaimed:
+        m = poly_mask(N, reclaimed)
+        H[m] = sea_m
+        sea_v = sea_v | m
+    print(name, 'height', round(float(H.min()), 1), '..', round(float(H.max()), 1),
+          f'sea {sea_v.mean() * 100:.0f}%' if sea_v is not None else '')
     v = np.clip(np.round((H + 100) * 10), 0, 65535).astype('<u2')
     v.tofile(os.path.join(out, 'terrain.bin'))
 
     # 2) テクスチャ用の高解像度標高（ピクセル中心）
     TEX_DEM = 1024
     la2, lo2 = ll_grid(TEX_DEM)
-    Hd = dem.grid(la2, lo2).astype(np.float32)
+    Hd = dem.grid(la2, lo2, sea=sea_m).astype(np.float32)
+    sea_d = dem.missing.astype(np.float32) if sea_m is not None else None
+    if reclaimed:
+        m = poly_mask(TEX_DEM, reclaimed)
+        Hd[m] = sea_m
+        sea_d = np.maximum(sea_d, m.astype(np.float32))
     px_m = S / TEX_DEM
     Hs = blur(Hd, 1.2)  # 近代の盛土・切土の細い線を少し弱める
     gy_, gx_ = np.gradient(Hs, px_m)
@@ -290,10 +324,6 @@ def build(name):
             lat0 + math.degrees(S / 2 / R_EARTH) + 0.002,
             lon0 + math.degrees(S / 2 / (R_EARTH * math.cos(math.radians(lat0)))) + 0.002)
     osm = osm_features(name, bbox)
-
-    def to_tex(lat, lon, n):
-        e, no = ll_to_enu(lat0, lon0, lat, lon)
-        return ((e / S) + 0.5) * n, (0.5 - no / S) * n
 
     def mask_from(n, pick, width_m):
         img = Image.new('L', (n, n), 0)
@@ -339,16 +369,22 @@ def build(name):
             return 7
         return None
 
+    up = lambda a: np.asarray(Image.fromarray(a.astype(np.float32), mode='F').resize((TEX, TEX), Image.BICUBIC), dtype=np.float32)
     water = mask_from(TEX, water_pick, 0)
+    sea_t = None
+    if sea_m is not None:
+        sea_t = (up(sea_d) > 0.5).astype(np.float32)
+        water = np.maximum(water, sea_t)
     rimg = Image.new('L', (TEX, TEX), 0)
     rd_ = ImageDraw.Draw(rimg)
     for pts in cfg['roads'].values():
         rd_.line([to_tex(la_, lo_, TEX) for la_, lo_ in pts], fill=255, width=max(3, int(round(16 / (S / TEX)))), joint='curve')
     roads = np.asarray(rimg, dtype=np.float32) / 255.0
     water_s = mask_from(N, water_pick, 0)
+    if sea_m is not None:
+        water_s = np.maximum(water_s, sea_v.astype(np.float32))
 
     # 4) 土地被覆（当時を想定: 平地=田畑、斜面・尾根=林、河原=砂礫）
-    up = lambda a: np.asarray(Image.fromarray(a.astype(np.float32), mode='F').resize((TEX, TEX), Image.BICUBIC), dtype=np.float32)
     slope_t, rel_t, shade_t, basin_t, H_t = map(up, (slope, rel, shade, basin, Hs))
     rng = np.random.default_rng(7 if name == 'sekigahara' else 11)
     n1 = fbm((TEX, TEX), rng)
@@ -412,11 +448,18 @@ def build(name):
     # 街道
     rd = blur(roads, 0.8)
     col = col * (1 - rd[..., None] * 0.85) + np.array([206, 190, 150], np.float32) * rd[..., None] * 0.85
-    # 水面
+    # 水面（海は岸から離れるほど深い色にし、波のむらを少し入れる）
     wat = blur(water, 0.8)
-    col = col * (1 - wat[..., None]) + np.array([86, 124, 138], np.float32) * wat[..., None]
+    wcol = np.broadcast_to(np.array([86, 124, 138], np.float32), (TEX, TEX, 3)).copy()
+    if sea_t is not None:
+        deep = np.clip((blur(sea_t, 12) - 0.45) * 2.0, 0, 1)
+        wcol = wcol * (1 - deep[..., None]) + np.array([62, 100, 128], np.float32) * deep[..., None]
+        wcol *= (0.96 + n1[..., None] * 0.08)
+    col = col * (1 - wat[..., None]) + wcol * wat[..., None]
     # 陰影は控えめに（ライティングは 3D 側で行う）＋谷のアンビエントオクルージョン
     ao = np.clip(1 + rel_t / 60, 0.78, 1.08)
+    if sea_t is not None:
+        ao = np.where(sea_t > 0.5, 1.0, ao)   # 海面には岸の陰を落とさない
     sh = 0.78 + 0.34 * shade_t
     col *= (sh * ao)[..., None]
     img = Image.fromarray(np.clip(col, 0, 255).astype(np.uint8))
