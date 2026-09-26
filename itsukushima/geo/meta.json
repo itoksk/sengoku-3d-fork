@@ -1,0 +1,15 @@
+{
+ "name": "itsukushima",
+ "origin": {
+  "lat": 34.3,
+  "lon": 132.315
+ },
+ "size_m": 12000,
+ "N": 401,
+ "m_per_unit": 30.0,
+ "size_units": 400.0,
+ "height": "v/10-100 [m]",
+ "hmin": 0.0,
+ "hmax": 664.4652797342942,
+ "attribution": "地形: 国土地理院 標高タイル（基盤地図情報 数値標高モデル）／水系・街道: © OpenStreetMap contributors"
+}
