@@ -12,6 +12,7 @@
 |---|---|---|---|
 | [厳島の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/itsukushima/) | 天文24年（1555） | 広島県廿日市市宮島町 | 海と島の地形、嵐の夜の渡海、博奕尾の尾根越えの奇襲、村上水軍の働き |
 | [諏訪原城の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/suwahara/) | 天正3年（1575） | 静岡県島田市 | 牧之原台地の北端の城、丸馬出と三日月堀、大井川と東海道 |
+| [上田合戦](https://k-ito-schoolagent.github.io/sengoku-3d/ueda/) | 天正13年（1585）・慶長5年（1600） | 長野県上田市 | 神川と城下町を使った真田昌幸の迎え撃ち、丸子表の対陣、関ヶ原へ急ぐ秀忠の足止め |
 | [関ヶ原の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/sekigahara/) | 慶長5年（1600） | 岐阜県関ケ原町 | 陣跡の実座標にもとづく布陣、霧の開戦、小早川の寝返り、島津の退き口 |
 
 「この合戦も入れてほしい」は [issue](https://github.com/k-ito-schoolagent/sengoku-3d/issues/new/choose) でリクエストしてください。
