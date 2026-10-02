@@ -16,6 +16,7 @@ body:
         - 諏訪原城の戦い
         - 厳島の戦い
         - 上田合戦
+        - 桶狭間の戦い
         - その他（下に書く）
     validations:
       required: true
