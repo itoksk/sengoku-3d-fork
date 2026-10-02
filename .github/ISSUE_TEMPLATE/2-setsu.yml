@@ -17,6 +17,7 @@ body:
         - 厳島の戦い
         - 上田合戦
         - 桶狭間の戦い
+        - 川中島の戦い
         - その他（下に書く）
     validations:
       required: true
