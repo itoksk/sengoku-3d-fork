@@ -1,0 +1,15 @@
+{
+ "name": "ishiyama",
+ "origin": {
+  "lat": 34.655,
+  "lon": 135.5
+ },
+ "size_m": 11000,
+ "N": 371,
+ "m_per_unit": 30.0,
+ "size_units": 366.6666666666667,
+ "height": "v/10-100 [m]",
+ "hmin": 0.0,
+ "hmax": 40.525160271284534,
+ "attribution": "地形: 国土地理院 標高タイル（基盤地図情報 数値標高モデル）／水系・街道: © OpenStreetMap contributors"
+}

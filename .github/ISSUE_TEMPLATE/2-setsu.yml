@@ -22,6 +22,7 @@ body:
         - 長篠の戦い
         - 山崎の戦い
         - 大坂の陣
+        - 石山合戦
         - その他（下に書く）
     validations:
       required: true
