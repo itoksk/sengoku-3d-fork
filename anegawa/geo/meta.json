@@ -1,0 +1,15 @@
+{
+ "name": "anegawa",
+ "origin": {
+  "lat": 35.42,
+  "lon": 136.29
+ },
+ "size_m": 12000,
+ "N": 401,
+ "m_per_unit": 30.0,
+ "size_units": 400.0,
+ "height": "v/10-100 [m]",
+ "hmin": 81.2453090556651,
+ "hmax": 692.9135149990162,
+ "attribution": "地形: 国土地理院 標高タイル（基盤地図情報 数値標高モデル）／水系・街道: © OpenStreetMap contributors"
+}
