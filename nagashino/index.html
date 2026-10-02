@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- このファイルはすべての合戦で共通です。編集せずにコピーして使ってください（題名などは scene.js に書きます） -->
+<title>戦国合戦 3D俯瞰デモ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/sengoku.css">
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="ui">
+  <div class="top">
+    <div class="panel title">
+      <h1 id="btitle"></h1>
+      <p><span id="bsub"></span>　<a href="../">一覧へ</a></p>
+    </div>
+    <div class="panel legend">
+      <div id="blegend"></div>
+      <div class="hint">左ドラッグで視点を回転<br>右ドラッグ・2本指で見る場所を移動<br>ホイール・ピンチで拡大縮小<br>ダブルクリックで視点を戻す<br>Space で再生／停止<br>H で説明の表示／非表示<br>S で諸説ノート</div>
+    </div>
+  </div>
+  <div class="panel card">
+    <div class="meta"><span class="act" id="pact"></span><span id="pdate"></span>
+      <span class="tools"><button id="setsuBtn" aria-haspopup="dialog" aria-controls="setsu">諸説<span class="n zero">0</span></button><button id="fold" aria-expanded="true" aria-controls="pbody">説明を隠す</button></span></div>
+    <h2 id="ptitle"></h2>
+    <div class="fold" id="pbody"><div><p id="ptext"></p></div></div>
+    <div class="bar"><div id="prog"></div></div>
+    <div class="ctrl">
+      <button id="prev" aria-label="前の場面">◀</button>
+      <button id="play" aria-label="再生／停止">❚❚</button>
+      <button id="next" aria-label="次の場面">▶</button>
+      <div id="dots"></div>
+      <button id="speed" aria-label="再生速度">1×</button>
+    </div>
+    <div class="fold"><div><div class="note" id="bnote"></div></div></div>
+    <div class="attr" id="battr">地形：国土地理院 標高タイルを加工して作成／水系：© OpenStreetMap contributors</div>
+  </div>
+</div>
+<aside class="panel setsu" id="setsu" role="dialog" aria-labelledby="setsuTitle" aria-hidden="true">
+  <header><div><h3 id="setsuTitle">諸説ノート</h3><p id="setsuSub"></p></div><button id="setsuClose" aria-label="諸説ノートを閉じる">×</button></header>
+  <div class="body" id="setsuBody"></div>
+  <footer>
+    <a class="cta" id="setsuEdit" target="_blank" rel="noopener">諸説を追記する</a><a class="cta sub" id="setsuHow" target="_blank" rel="noopener">追記のしかた</a>
+    <div>ここは誰でも追記できるノートです。出典を添えて、別の見方を足してください。</div>
+  </footer>
+</aside>
+<div id="loading">地形を生成しています</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="../lib/sengoku.js"></script>
+<script src="scene.js"></script>
+</body>
+</html>
