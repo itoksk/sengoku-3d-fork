@@ -15,6 +15,7 @@
 | [川中島の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/kawanakajima/) | 永禄4年（1561）ほか | 長野県長野市 | 千曲川と犀川にはさまれた川中島、妻女山と海津城のにらみ合い、霧の八幡原、別働隊の到着 |
 | [姉川の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/anegawa/) | 元亀元年（1570） | 滋賀県長浜市 | 小谷城と横山城の位置関係、姉川の河原での激突、横山丘陵の信長本陣 |
 | [諏訪原城の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/suwahara/) | 天正3年（1575） | 静岡県島田市 | 牧之原台地の北端の城、丸馬出と三日月堀、大井川と東海道 |
+| [長篠の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/nagashino/) | 天正3年（1575） | 愛知県新城市 | 長篠城の包囲、連吾川と馬防柵の線、鳶ヶ巣山砦への奇襲、武田軍の突撃と崩壊 |
 | [上田合戦](https://k-ito-schoolagent.github.io/sengoku-3d/ueda/) | 天正13年（1585）・慶長5年（1600） | 長野県上田市 | 神川と城下町を使った真田昌幸の迎え撃ち、丸子表の対陣、関ヶ原へ急ぐ秀忠の足止め |
 | [関ヶ原の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/sekigahara/) | 慶長5年（1600） | 岐阜県関ケ原町 | 陣跡の実座標にもとづく布陣、霧の開戦、小早川の寝返り、島津の退き口 |
 
