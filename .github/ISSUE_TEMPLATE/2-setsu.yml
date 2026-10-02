@@ -20,6 +20,7 @@ body:
         - 川中島の戦い
         - 姉川の戦い
         - 長篠の戦い
+        - 山崎の戦い
         - その他（下に書く）
     validations:
       required: true

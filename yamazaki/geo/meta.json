@@ -1,0 +1,15 @@
+{
+ "name": "yamazaki",
+ "origin": {
+  "lat": 34.9,
+  "lon": 135.695
+ },
+ "size_m": 10500,
+ "N": 351,
+ "m_per_unit": 30.0,
+ "size_units": 350.0,
+ "height": "v/10-100 [m]",
+ "hmin": 2.6555133597467604,
+ "hmax": 582.6677896922514,
+ "attribution": "地形: 国土地理院 標高タイル（基盤地図情報 数値標高モデル）／水系・街道: © OpenStreetMap contributors"
+}
