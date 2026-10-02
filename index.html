@@ -21,24 +21,45 @@ h1{font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;font-weight:800;fo
 .map{position:sticky;top:24px;margin:0}
 .map svg{display:block;width:100%;height:auto;max-height:78vh}
 .map .land{fill:var(--card);stroke:var(--line);stroke-width:1;stroke-linejoin:round}
-.map .pin circle.dot{fill:var(--kin);stroke:var(--bg);stroke-width:2.5}
-.map .pin circle.halo{fill:var(--kin);opacity:0;transition:opacity .15s}
-.map .pin text{font-family:"Shippori Mincho",serif;font-weight:700;font-size:21px;fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:5px;stroke-linejoin:round}
+.map .dot{fill:var(--kin);stroke:var(--bg);stroke-width:2.5}
+.map .halo{fill:var(--kin);opacity:0;transition:opacity .15s}
+.map .pin text{font-family:"Shippori Mincho",serif;font-weight:700;font-size:21px;fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:5px;stroke-linejoin:round;transition:fill .15s}
 .map .pin text.yr{font-family:"Noto Sans JP",sans-serif;font-weight:400;font-size:14px;fill:var(--sub)}
-.map .pin:hover circle.halo,.map .pin:focus-visible circle.halo,.map .pin.on circle.halo{opacity:.22}
-.map .pin:focus{outline:none}
-.map .pin:focus-visible circle.dot{stroke:var(--ink)}
+.map svg.dense .pin text{font-size:17px}
+.map svg.dense .pin text.yr{font-size:12px}
+.map .lead-line{stroke:var(--line);stroke-width:1;fill:none}
+.map .pin:hover .halo,.map .pin:focus-visible .halo,.map .on .halo{opacity:.22}
+.map .pin:hover text.ttl,.map .pin:focus-visible text.ttl,.map .pin.on text.ttl{fill:var(--kin)}
+.map .pin:focus-visible .dot,.map .spot.focus .dot{stroke:var(--ink)}
 .map figcaption{font-size:12px;color:var(--sub);line-height:1.7;margin-top:6px}
-a.item.on{border-color:var(--kin)}
 @media (max-width:820px){.atlas{grid-template-columns:1fr}.map{position:static}.map svg{max-height:none}}
-a.item{display:block;text-decoration:none;color:inherit;background:var(--card);border-radius:6px;padding:20px 22px;margin-bottom:14px;border:1px solid var(--rule)}
-a.item:hover{border-color:var(--kin)}
+/* 年表: 左に年、右に題名。軸は一覧全体で1本 */
+#list{--yc:112px;--gap:40px;--axis:calc(var(--yc) + var(--gap) / 2);position:relative;padding:4px 0}
+#list::before{content:"";position:absolute;left:var(--axis);top:0;bottom:0;width:1px;background:var(--rule)}
+a.item{position:relative;display:grid;grid-template-columns:var(--yc) minmax(0,1fr);column-gap:var(--gap);align-items:baseline;
+  min-height:44px;padding:10px 0;margin-bottom:18px;text-decoration:none;color:inherit}
+a.item:last-child{margin-bottom:0}
+a.item::before{content:"";position:absolute;left:calc(var(--axis) - 3.5px);top:22px;width:8px;height:8px;border-radius:50%;
+  background:var(--bg);border:1px solid var(--line);box-sizing:border-box;transition:background-color .15s,border-color .15s}
+.item .yr{grid-column:1;grid-row:1;font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;font-weight:700;font-size:23px;line-height:1.2;color:var(--ink);letter-spacing:.02em}
+.item h2{grid-column:2;grid-row:1;font-family:"Shippori Mincho",serif;font-size:22px;line-height:1.3;margin:0;letter-spacing:.05em;transition:color .15s}
+.item .date{grid-column:1;grid-row:1;align-self:start;font-size:12px;line-height:1.6;color:var(--sub);padding-top:6px;word-break:keep-all;overflow-wrap:anywhere}
+.item .yr~.date{grid-row:2/span 3;padding-top:2px}
+.item .place{grid-column:2;font-size:13px;color:var(--sub);margin-top:4px}
+.item p{grid-column:2;margin:6px 0 0;line-height:1.75;color:var(--sub);font-size:14px}
+.item p.by{font-size:12px;margin-top:4px}
+a.item:hover h2,a.item:focus-visible h2,a.item.on h2{color:var(--kin)}
+a.item:hover::before,a.item:focus-visible::before,a.item.on::before{background:var(--kin);border-color:var(--kin)}
 a:focus-visible{outline:2px solid var(--kin);outline-offset:2px}
-.item h2{font-family:"Shippori Mincho",serif;font-size:24px;margin:0 0 4px;letter-spacing:.05em}
-.item .date{font-size:13px;color:var(--kin);margin-bottom:8px}
-.item .date span{color:var(--sub);margin-left:10px}
-.item p{margin:0;line-height:1.75;color:var(--sub);font-size:14px}
-.item .by{margin-top:8px;font-size:12px}
+@media (max-width:820px){
+  #list{--yc:56px;--gap:28px}
+  .item .yr{font-size:19px}
+  .item h2{font-size:19px}
+  .item .date{font-size:11px}
+  .item p{font-size:13px}
+  .item .place{font-size:12px}
+  a.item::before{top:19px}
+}
 section.join{margin-top:48px;padding-top:28px;border-top:1px solid var(--rule)}
 .join h2{font-family:"Shippori Mincho",serif;font-size:22px;letter-spacing:.05em;margin:0 0 10px}
 .join p{line-height:1.85;margin:0 0 14px;font-size:15px}
@@ -101,41 +122,188 @@ footer a{color:inherit}
     document.getElementById('gh-repo').href=base;
   }
   const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const year=d=>{const m=String(d.date||'').match(/(\d{3,4})/);return m?+m[1]:9999;};
+  const year=d=>{const m=String(d.date||'').match(/(\d{4})/);return m?+m[1]:9999;};
   fetch('battles.json').then(r=>r.json()).then(ids=>Promise.all(ids.map(id=>fetch(id+'/battle.json').then(r=>r.json()).catch(()=>null))))
     .then(list=>{
       list=list.filter(Boolean).sort((a,b)=>year(a)-year(b));
-      document.getElementById('list').innerHTML=list.map(d=>`<a class="item" href="${esc(d.id)}/" data-id="${esc(d.id)}"><h2>${esc(d.title)}</h2>`+
-        `<div class="date">${esc(d.date)}<span>${esc(d.place)}</span></div><p>${esc(d.summary)}</p>`+
-        (d.authors&&d.authors.length?`<p class="by">つくった人：${d.authors.map(esc).join('、')}</p>`:'')+`</a>`).join('');
+      // 年表の1行: 左列に西暦と和暦、右列に題名・場所・あらすじ
+      document.getElementById('list').innerHTML=list.map(d=>{const y=year(d);
+        return `<a class="item" href="${esc(d.id)}/" data-id="${esc(d.id)}">`+(y<9999?`<span class="yr" aria-hidden="true">${y}</span>`:'')+
+        `<h2>${esc(d.title)}</h2><div class="date">${esc(d.date)}</div>`+(d.place?`<div class="place">${esc(d.place)}</div>`:'')+
+        `<p class="sum">${esc(d.summary)}</p>`+
+        (Array.isArray(d.authors)&&d.authors.length?`<p class="by">つくった人：${d.authors.map(esc).join('、')}</p>`:'')+`</a>`;}).join('');
       document.getElementById('count').textContent=`${list.length} の合戦（年代順）`;
       drawMap(list);
     }).catch(()=>{});
+
   // 日本地図に合戦の印を置く（位置は battle.json の build.origin）
+  // 地図の年号行は西暦だけにする（和暦の全文では密集地で名札が収まらないため。全文は aria-label と一覧に残す）
+  const mapYear=d=>{const t=String(d.date||''),ms=[...t.matchAll(/\d{4}/g)];if(!ms.length)return t;
+    // 4桁の年と、その間の記号（〜 か ・）と、末尾の「ほか」だけを残す
+    return ms.map((x,i)=>(i?(t.slice(ms[i-1].index+4,x.index).includes('〜')?'〜':'・'):'')+x[0]).join('')+(/ほか\s*$/.test(t)?'ほか':'');};
   function drawMap(list){
     fetch('lib/japan-map.json').then(r=>r.json()).then(m=>{
       const P=([lat,lon])=>[(lon-m.lon0)*m.kx*m.k,(m.lat1-lat)*m.k];
-      const pins=list.filter(d=>d.build&&d.build.origin).map(d=>{const [x,y]=P(d.build.origin);return {d,x,y,left:x>m.w*0.62};});
-      // 名札が重ならないよう、上から順に少しずつずらす
-      pins.sort((a,b)=>a.y-b.y);const placed=[];
-      const hit=(a,b)=>a[0]<b[0]+b[2]&&b[0]<a[0]+a[2]&&a[1]<b[1]+b[3]&&b[1]<a[1]+a[3];
-      const dots=pins.map(q=>[q.x-9,q.y-9,18,18]);
-      for(const p of pins){p.ty=p.y+7;const wpx=p.d.title.length*21+8;
-        p.box=()=>[p.left?p.x-14-wpx:p.x+14,p.ty-20,wpx,42];
-        for(let n=0;n<20&&(placed.some(q=>hit(p.box(),q.box()))||dots.some(d=>hit(p.box(),d)));n++)p.ty+=12;
-        placed.push(p);}
-      const svg=`<svg viewBox="0 0 ${m.w} ${m.h}" role="img" aria-label="日本地図。合戦の場所に印があります"><path class="land" d="${m.d}"/>`+
-        pins.map(p=>{const a=p.left?'end':'start',tx=p.left?p.x-14:p.x+14;
-          return `<a class="pin" href="${esc(p.d.id)}/" data-id="${esc(p.d.id)}" aria-label="${esc(p.d.title)}（${esc(p.d.date)}）">`+
-            `<circle class="halo" cx="${p.x}" cy="${p.y}" r="16"/><circle class="dot" cx="${p.x}" cy="${p.y}" r="6.5"/>`+
-            (Math.abs(p.ty-p.y-7)>1?`<path d="M${p.x} ${p.y}L${tx-(p.left?-4:4)} ${p.ty-7}" stroke="var(--line)" fill="none"/>`:'')+
-            `<text x="${tx}" y="${p.ty}" text-anchor="${a}">${esc(p.d.title)}</text><text class="yr" x="${tx}" y="${p.ty+19}" text-anchor="${a}">${esc(p.d.date)}</text></a>`;}).join('')+`</svg>`;
+      // 座標が数値でない印は除く（NaN が押し広げで全体に広がるのを防ぐ）
+      const pts=list.filter(d=>d.build&&Array.isArray(d.build.origin)).map(d=>{const [x,y]=P(d.build.origin);return {d,x,y};}).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));
+      // 1. 距離 2 未満（ほぼ同じ地点）の印を1つのグループにまとめる
+      const groups=[];
+      for(const p of pts){
+        const near=groups.filter(g=>g.items.some(q=>Math.hypot(q.x-p.x,q.y-p.y)<2));
+        const g=near.length?near[0]:{items:[]};if(!near.length)groups.push(g);
+        g.items.push(p);
+        for(const o of near.slice(1)){g.items.push(...o.items);groups.splice(groups.indexOf(o),1);}
+      }
+      groups.forEach((g,i)=>{g.i=i;g.x=g.items.reduce((s,q)=>s+q.x,0)/g.items.length;g.y=g.items.reduce((s,q)=>s+q.y,0)/g.items.length;g.ids=g.items.map(q=>q.d.id);});
+      // 近すぎる印は重ならない距離まで押し広げる（位置は概略）
+      for(let it=0;it<20;it++){let moved=false;
+        for(let i=0;i<groups.length;i++)for(let j=i+1;j<groups.length;j++){const a=groups[i],b=groups[j];
+          const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<2||d>=16-1e-6)continue;
+          const k=(16-d)/2/d;a.x-=dx*k;a.y-=dy*k;b.x+=dx*k;b.y+=dy*k;moved=true;}
+        if(!moved)break;}
+      const pin=(p,dot)=>`<a class="pin" role="group" href="${esc(p.d.id)}/" data-id="${esc(p.d.id)}" aria-label="${esc(p.d.title)}（${esc(p.d.date)}）">`+dot+
+        `<g class="lbl"><text class="ttl" x="0" y="0">${esc(p.d.title)}</text><text class="yr" x="0" y="19">${esc(mapYear(p.d))}</text></g></a>`;
+      const dotSvg=g=>`<circle class="halo" cx="${g.x}" cy="${g.y}" r="16"/><circle class="dot" cx="${g.x}" cy="${g.y}" r="6.5"/>`;
+      // 印が1つの合戦はリンクの中に印を入れる。まとめた印は共通の g.spot に置き、名札だけを合戦ごとのリンクにする
+      const svg=`<svg viewBox="0 0 ${m.w} ${m.h}" role="img" aria-label="日本地図。合戦の場所に印があります"><path class="land" d="${m.d}"/><g class="leads"></g>`+
+        groups.map(g=>g.items.length===1?pin(g.items[0],dotSvg(g)):
+          `<g class="spot" data-ids="${esc(g.ids.join(' '))}">${dotSvg(g)}</g>`+g.items.map(p=>pin(p,'')).join('')).join('')+`</svg>`;
       const fig=document.getElementById('map');fig.insertAdjacentHTML('afterbegin',svg);
-      // 地図の印と一覧のカードを連動させる
-      const on=(id,v)=>document.querySelectorAll(`[data-id="${CSS.escape(id)}"]`).forEach(e=>e.classList.toggle('on',v));
+      const root=fig.querySelector('svg');
+      for(const g of groups)g.items.forEach(p=>{p.el=root.querySelector(`a.pin[data-id="${CSS.escape(p.d.id)}"]`);});
+      // 印が 8 を超えたら名札を1段小さくする（測り直しもこの大きさで行う）
+      if(groups.length>8){root.classList.add('dense');root.querySelectorAll('text.yr').forEach(t=>t.setAttribute('y',16));}
+      layout(root,groups,m);
+      // フォントの読み込みで文字幅が変わるので、読み込み後に測り直す
+      if(document.fonts){document.fonts.ready.then(()=>layout(root,groups,m,true));document.fonts.addEventListener('loadingdone',()=>layout(root,groups,m,true));}
+      // 地図の印と一覧の項目を連動させる（まとめた印は、どれか1つの合戦が光れば光る）
+      const on=(id,v)=>{document.querySelectorAll(`[data-id="${CSS.escape(id)}"]`).forEach(e=>e.classList.toggle('on',v));
+        root.querySelectorAll('.spot').forEach(s=>{if(s.dataset.ids.split(' ').includes(id))s.classList.toggle('on',v);});};
       document.querySelectorAll('[data-id]').forEach(e=>{const id=e.dataset.id;
-        for(const [ev,v] of [['mouseenter',1],['mouseleave',0],['focus',1],['blur',0]])e.addEventListener(ev,()=>on(id,!!v));});
+        for(const [ev,v] of [['mouseenter',1],['mouseleave',0],['focus',1],['blur',0]])e.addEventListener(ev,()=>on(id,!!v));
+        // まとめた印は、名札にキーボードでフォーカスしたときも縁取りする
+        if(e.closest('svg'))for(const [ev,v] of [['focus',1],['blur',0]])e.addEventListener(ev,()=>
+          root.querySelectorAll('.spot').forEach(sp=>{if(sp.dataset.ids.split(' ').includes(id))sp.classList.toggle('focus',!!v);}));});
     }).catch(()=>{});
+  }
+
+  // 決まった位置へ動かす（揃え方に合わせて行ごとに x をずらす）
+  function place(groups){
+    for(const g of groups){const ox=g.b[0],oy=g.b[1]-g.top;
+      for(const r of g.rows){
+        for(const [el,bx] of [[r.t,r.bt],[r.y,r.by]]){const w=bx.x+bx.width;
+          el.setAttribute('x',g.al==='e'?g.W-w:g.al==='m'?(g.W-w)/2:0);}
+        r.p.el.querySelector('.lbl').setAttribute('transform',`translate(${ox} ${oy+r.dy})`);}}
+  }
+
+  // 名札を実寸で測り、印・他の名札・地図の外・引き出し線に当たらない位置へ置く（単位は viewBox）
+  function layout(root,groups,m,warn){
+    const PAD=3,DOT_R=9,DOT_M=6,GAP=4,EX=80,EY=40;
+    // 2. 実寸の測定: 題名と年号を1組として、グループ内で縦に積む
+    for(const g of groups){
+      let dy=0,prevBot=null;g.W=0;
+      g.rows=g.items.map(p=>{const [t,y]=p.el.querySelectorAll('text');t.setAttribute('x',0);y.setAttribute('x',0);
+        const bt=t.getBBox(),by=y.getBBox(),top=Math.min(bt.y,by.y),bot=Math.max(bt.y+bt.height,by.y+by.height);
+        if(prevBot!==null)dy+=prevBot-top+GAP;prevBot=bot;
+        g.W=Math.max(g.W,bt.x+bt.width,by.x+by.width);
+        return {p,t,y,bt,by,dy,top,bot};});
+      g.top=g.rows[0].top;g.H=g.rows[g.rows.length-1].dy+prevBot-g.top;
+    }
+    // 測った大きさが前回と同じなら置き直さない（フォント読み込みの通知は何度か来るため）
+    const sig=groups.map(g=>g.W.toFixed(1)+'x'+g.H.toFixed(1)).join();
+    // 測るために x を 0 に戻しているので、置き直さないときも揃え直しだけは必ず行う
+    if(root.dataset.sig===sig){place(groups);return;}root.dataset.sig=sig;
+    const D=Math.SQRT1_2;
+    // 3. 候補（右・左・右下・右上・左下・左上・下・上）。返り値は名札の箱 [x,y,w,h] と揃え方
+    const CAND={
+      R :(g,r)=>[g.x+r,g.y+g.top,'s'],
+      L :(g,r)=>[g.x-r-g.W,g.y+g.top,'e'],
+      RD:(g,r)=>[g.x+r*D,g.y+r*D,'s'],
+      RU:(g,r)=>[g.x+r*D,g.y-r*D-g.H,'s'],
+      LD:(g,r)=>[g.x-r*D-g.W,g.y+r*D,'e'],
+      LU:(g,r)=>[g.x-r*D-g.W,g.y-r*D-g.H,'e'],
+      D :(g,r)=>[g.x-g.W/2,g.y+r,'m'],
+      U :(g,r)=>[g.x-g.W/2,g.y-r-g.H,'m']};
+    const ORD_L=['R','L','RD','RU','LD','LU','D','U'],ORD_R=['L','R','LD','LU','RD','RU','D','U'];
+    const hit=(a,b)=>a[0]<b[0]+b[2]&&b[0]<a[0]+a[2]&&a[1]<b[1]+b[3]&&b[1]<a[1]+a[3];
+    const grow=(b,e)=>[b[0]-e,b[1]-e,b[2]+2*e,b[3]+2*e];
+    const circRect=(cx,cy,r,b)=>{const dx=Math.max(b[0]-cx,0,cx-b[0]-b[2]),dy=Math.max(b[1]-cy,0,cy-b[1]-b[3]);return dx*dx+dy*dy<r*r;};
+    const segCirc=(s,cx,cy,r)=>{const [x1,y1,x2,y2]=s,vx=x2-x1,vy=y2-y1,l=vx*vx+vy*vy;
+      const t=l?Math.max(0,Math.min(1,((cx-x1)*vx+(cy-y1)*vy)/l)):0;return Math.hypot(x1+t*vx-cx,y1+t*vy-cy)<r;};
+    // 線分と矩形の交差（Liang-Barsky）
+    const segRect=(s,b)=>{const [x1,y1,x2,y2]=s,dx=x2-x1,dy=y2-y1;let t0=0,t1=1;
+      for(const [pp,qq] of [[-dx,x1-b[0]],[dx,b[0]+b[2]-x1],[-dy,y1-b[1]],[dy,b[1]+b[3]-y1]]){
+        if(pp===0){if(qq<0)return false;continue;}const t=qq/pp;
+        if(pp<0){if(t>t1)return false;if(t>t0)t0=t;}else{if(t<t0)return false;if(t<t1)t1=t;}}
+      return true;};
+    const segSeg=(a,b)=>{const cr=(ax,ay,bx,by,cx,cy)=>(bx-ax)*(cy-ay)-(by-ay)*(cx-ax);
+      const d1=cr(b[0],b[1],b[2],b[3],a[0],a[1]),d2=cr(b[0],b[1],b[2],b[3],a[2],a[3]),d3=cr(a[0],a[1],a[2],a[3],b[0],b[1]),d4=cr(a[0],a[1],a[2],a[3],b[2],b[3]);
+      return d1*d2<0&&d3*d4<0;};
+    // 引き出し線: 印の縁から、名札の箱のいちばん近い辺の中点へ
+    const leader=(g,b)=>{const mids=[[b[0],b[1]+b[3]/2],[b[0]+b[2],b[1]+b[3]/2],[b[0]+b[2]/2,b[1]],[b[0]+b[2]/2,b[1]+b[3]]];
+      const [tx,ty]=mids.reduce((a,c)=>Math.hypot(c[0]-g.x,c[1]-g.y)<Math.hypot(a[0]-g.x,a[1]-g.y)?c:a);
+      const l=Math.hypot(tx-g.x,ty-g.y)||1;return [g.x+(tx-g.x)/l*8,g.y+(ty-g.y)/l*8,tx,ty];};
+    // 4. 混み具合（半径 60 以内の印の数）が多い順、同数なら北から
+    const crowd=g=>groups.filter(o=>o!==g&&Math.hypot(o.x-g.x,o.y-g.y)<60).length;
+    const order=groups.slice().sort((a,b)=>crowd(b)-crowd(a)||a.y-b.y);
+    const boxes=[],lines=[];
+    // 配置に依存しない条件（地図の範囲・印との衝突・自分の引き出し線と他の印）は、候補を作る時点で除く
+    const fixedOk=(g,b,ln)=>{const bb=grow(b,PAD);
+      // 名札は元の地図の外にも出してよい（左右 80・上下 40 まで。置いたあとで viewBox を広げる）
+      if(bb[0]<-EX||bb[1]<-EY||bb[0]+bb[2]>m.w+EX||bb[1]+bb[3]>m.h+EY)return false;
+      // 自分の印は半径 9 だけ避ける（余白 6 を足すと「右」「左」の 14 に置けなくなるため）
+      if(groups.some(o=>circRect(o.x,o.y,o===g?DOT_R:DOT_R+DOT_M,bb)))return false;
+      return !(ln&&groups.some(o=>o!==g&&segCirc(ln,o.x,o.y,DOT_R)));};
+    // 配置に依存する条件（置いた名札の箱と引き出し線）。探索の上限はこの呼び出し回数で数える
+    let calls=0;
+    const ok=(g,b,ln)=>{calls++;const bb=grow(b,PAD);
+      if(boxes.some(o=>hit(bb,o))||lines.some(l=>segRect(l,bb)))return false;
+      return !(ln&&(boxes.some(o=>segRect(ln,o))||lines.some(l=>segSeg(ln,l))));};
+    // 5. 候補の順番に、距離を 14 から 12 ずつ離して（最大 10 段）並べた候補
+    const raw=g=>{const ord=g.x>m.w*0.62?ORD_R:ORD_L,out=[];
+      for(let k=0;k<=10;k++){const r=14+12*k;
+        for(const c of ord){const [x,y,al]=CAND[c](g,r),b=[x,y,g.W,g.H];out.push({b,al,ln:r>20?leader(g,b):null});}}
+      return out;};
+    const opt=new Map(order.map(g=>[g,raw(g).filter(o=>fixedOk(g,o.b,o.ln))]));
+    // 候補が1つもない名札は探索から外し、最初の候補に置いて知らせる
+    const none=order.filter(g=>!opt.get(g).length),seq=order.filter(g=>opt.get(g).length);
+    // 順に置き、置けなくなったら前の名札の次の候補に戻り、候補の順位の合計が最小の置き方を上限まで探す（順序が固定なので結果は毎回同じ）
+    const cur=new Map(),LIMIT=300000;
+    let back=0,bestCost=Infinity,res=new Map(),firstBack=-1;
+    const dfs=(i,cost)=>{if(calls>LIMIT||cost>=bestCost)return;
+      if(i===seq.length){bestCost=cost;res=new Map(cur);if(firstBack<0)firstBack=back;return;}
+      const g=seq[i],os=opt.get(g);
+      for(let k=0;k<os.length&&cost+k<bestCost;k++){const o=os[k];if(!ok(g,o.b,o.ln))continue;
+        cur.set(g,o);boxes.push(grow(o.b,PAD));if(o.ln)lines.push(o.ln);
+        dfs(i+1,cost+k);
+        boxes.pop();if(o.ln)lines.pop();cur.delete(g);back++;if(calls>LIMIT)return;}};
+    dfs(0,0);
+    root.dataset.backtracks=firstBack;root.dataset.nodes=calls;root.dataset.cost=bestCost;
+    // 6. 置けなかったときは、残りを最初の候補に置いて知らせる（フォント読み込み前の仮配置では黙る）
+    const left=[...none,...(bestCost<Infinity?[]:seq)];
+    for(const g of left)res.set(g,opt.get(g)[0]||raw(g)[0]);
+    if(warn&&left.length)console.warn('名札を重ならずに置けませんでした:',left.map(g=>g.ids.join(',')).join(' / '));
+    // 改善パス: 引き出し線が長い名札から順に、今の配置に対して当たらない最初の候補（近い輪から）へ動かす。
+    // 1つでも動いたらもう一周（最大 10 周）。順序が固定なので結果は決まる
+    const len=o=>o.ln?Math.hypot(o.ln[2]-o.ln[0],o.ln[3]-o.ln[1]):0;
+    let passes=0;
+    for(;passes<10;passes++){let moved=false;
+      const by=seq.slice().sort((a,b)=>len(res.get(b))-len(res.get(a))||seq.indexOf(a)-seq.indexOf(b));
+      for(const g of by){const curO=res.get(g),os=opt.get(g),ci=os.indexOf(curO);
+        boxes.length=0;lines.length=0;
+        for(const o of order)if(o!==g){const r=res.get(o);boxes.push(grow(r.b,PAD));if(r.ln)lines.push(r.ln);}
+        for(let k=0;k<ci;k++)if(ok(g,os[k].b,os[k].ln)){res.set(g,os[k]);moved=true;break;}}
+      if(!moved)break;}
+    root.dataset.passes=passes;
+    for(const g of groups){const r=res.get(g);g.b=r.b;g.al=r.al;g.ln=r.ln;}
+    place(groups);
+    // viewBox を「元の範囲 ∪ すべての名札の箱 ＋ 余白 6」に広げる（上限は左右 80・上下 40）
+    let x0=0,y0=0,x1=m.w,y1=m.h;
+    for(const g of groups){const b=g.b;x0=Math.min(x0,b[0]-6);y0=Math.min(y0,b[1]-6);x1=Math.max(x1,b[0]+b[2]+6);y1=Math.max(y1,b[1]+b[3]+6);}
+    x0=Math.max(x0,-EX);y0=Math.max(y0,-EY);x1=Math.min(x1,m.w+EX);y1=Math.min(y1,m.h+EY);
+    root.setAttribute('viewBox',[x0,y0,x1-x0,y1-y0].map(v=>+v.toFixed(1)).join(' '));
+    root.querySelector('.leads').innerHTML=groups.filter(g=>g.ln).map(g=>{const [x1,y1,x2,y2]=g.ln.map(v=>+v.toFixed(1));
+      return `<path class="lead-line" d="M${x1} ${y1}L${x2} ${y2}"/>`;}).join('');
   }
 })();
 </script>
