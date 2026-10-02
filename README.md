@@ -19,6 +19,7 @@
 | [山崎の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/yamazaki/) | 天正10年（1582） | 京都府大山崎町・長岡京市 | 天王山と淀川にはさまれた隘路、円明寺川をはさんだ布陣、勝龍寺城への敗走 |
 | [上田合戦](https://k-ito-schoolagent.github.io/sengoku-3d/ueda/) | 天正13年（1585）・慶長5年（1600） | 長野県上田市 | 神川と城下町を使った真田昌幸の迎え撃ち、丸子表の対陣、関ヶ原へ急ぐ秀忠の足止め |
 | [関ヶ原の戦い](https://k-ito-schoolagent.github.io/sengoku-3d/sekigahara/) | 慶長5年（1600） | 岐阜県関ケ原町 | 陣跡の実座標にもとづく布陣、霧の開戦、小早川の寝返り、島津の退き口 |
+| [大坂の陣](https://k-ito-schoolagent.github.io/sengoku-3d/osaka/) | 慶長19年（1614）・慶長20年（1615） | 大阪府大阪市 | 惣構と真田丸、堀の埋め立て、天王寺・岡山の決戦、上町台地の上の城と南の決戦場 |
 
 「この合戦も入れてほしい」は [issue](https://github.com/k-ito-schoolagent/sengoku-3d/issues/new/choose) でリクエストしてください。
 
