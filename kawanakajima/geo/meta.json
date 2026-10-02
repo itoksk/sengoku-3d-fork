@@ -1,0 +1,15 @@
+{
+ "name": "kawanakajima",
+ "origin": {
+  "lat": 36.585,
+  "lon": 138.175
+ },
+ "size_m": 13500,
+ "N": 451,
+ "m_per_unit": 30.0,
+ "size_units": 450.0,
+ "height": "v/10-100 [m]",
+ "hmin": 336.2199628158357,
+ "hmax": 1094.978346523281,
+ "attribution": "地形: 国土地理院 標高タイル（基盤地図情報 数値標高モデル）／水系・街道: © OpenStreetMap contributors"
+}
